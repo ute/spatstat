@@ -911,7 +911,13 @@ thinjump <- function(n, p) {
   stopifnot(length(p) == 1)
   if(p <= 0) return(integer(0))
   if(p >= 1) return(seq_len(n))
-  if(p > 0.5) return(-thinjump(n, 1-p))
+  if(p > 0.5){
+    # For retention prob > 0.5 we find the ones to discard instead
+    discard <- thinjump(n, 1-p)
+    ## If nothing is discarded retain = 1:n otherwise retain = -discard
+    retain <- if(length(discard) == 0L) seq_len(n) else -discard
+    return(retain)
+  }
   guessmaxlength <- ceiling(n * p + 2 * sqrt(n * p * (1-p)))
   i <- .Call("thinjumpequal",
              n, p, guessmaxlength,
