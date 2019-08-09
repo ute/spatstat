@@ -32,7 +32,7 @@ Gfox <- function(X, Y, r=NULL, breaks=NULL,
   names(corx) <- corxtable
 # ensure compatible windows
   WX <- as.owin(X)
-  WY <- as.owin(Y)
+  WY <- if(is.ppp(Y)) Window(Y) else Frame(Y)
   if(!is.subset.owin(WX, WY)) {
     warning("Trimming the window of X to be a subset of the window of Y")
     WX <- intersect.owin(WX, WY)
